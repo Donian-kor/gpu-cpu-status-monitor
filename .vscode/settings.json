@@ -3,6 +3,10 @@
         "/^node --version; npm --version$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^node --check extension\\.js; Write-Output \"EXIT=\\$LASTEXITCODE\"$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

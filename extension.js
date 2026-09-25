@@ -54,6 +54,13 @@ function formatRam(bytes) {
   return `${(bytes / 1024 ** 3).toFixed(1)} GiB`;
 }
 
+/**
+ * nvidia-smi가 반환한 MiB 값을 GB 단위 문자열로 변환한다.
+ */
+function formatVram(mib) {
+  return `${(mib / 1024).toFixed(1)}GB`;
+}
+
 
 /**
  * nvidia-smi를 호출해 GPU 사용률, VRAM 사용량, 온도를 가져온다.
@@ -96,11 +103,11 @@ async function updateStatusBar() {
   if (gpuStats) {
     const vramPercent =
       gpuStats.memTotal > 0 ? Math.round((gpuStats.memUsed / gpuStats.memTotal) * 100) : 0;
-    text += ` | GPU ${gpuStats.gpuUtil}% | ${gpuStats.temp}°C | VRAM ${gpuStats.memUsed}/${gpuStats.memTotal}MB (${vramPercent}%)`;
+    text += ` | GPU ${gpuStats.gpuUtil}% | ${gpuStats.temp}°C | VRAM ${formatVram(gpuStats.memUsed)}/${formatVram(gpuStats.memTotal)} (${vramPercent}%)`;
     tooltip.push(
       `GPU: ${gpuStats.gpuUtil}%`,
       `GPU 온도: ${gpuStats.temp}°C`,
-      `VRAM: ${gpuStats.memUsed}/${gpuStats.memTotal} MiB (${vramPercent}%)`
+      `VRAM: ${formatVram(gpuStats.memUsed)}/${formatVram(gpuStats.memTotal)} (${vramPercent}%)`
     );
   } else {
     text += ' | GPU: nvidia-smi 실행 실패';
