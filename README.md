@@ -3,6 +3,7 @@
 VS Code 상태바(하단 오른쪽)에 아래 정보를 실시간으로 표시합니다.
 
 - CPU 사용률 (%)
+- RAM 사용률 (%) — 상태바 마우스 오버 시 현재/최대 용량 표시
 - GPU 사용률 (%) — NVIDIA GPU, `nvidia-smi` 사용
 - GPU 온도 (°C)
 - VRAM 사용량 (현재/최대 MB, %)
@@ -20,7 +21,7 @@ VS Code 상태바(하단 오른쪽)에 아래 정보를 실시간으로 표시�
 2. VS Code를 열고 `파일 > 폴더 열기`로 이 폴더를 엽니다.
 3. 키보드에서 **F5**를 누릅니다. (또는 좌측 "실행 및 디버그" 탭 → "실행" 버튼)
 4. "확장 개발 호스트(Extension Development Host)"라는 새 VS Code 창이 뜹니다.
-   이 새 창의 상태바 오른쪽에 CPU/GPU 정보가 표시됩니다.
+   이 새 창의 상태바 오른쪽에 CPU/RAM/GPU 정보가 표시됩니다.
 
 이 방법은 npm install이나 별도 빌드 과정 없이 바로 됩니다. 다만 이 방식은
 "디버그 실행"이라서, 그 새 창을 닫으면 확장도 꺼집니다. 평소에 VS Code를 켤 때마다
@@ -38,7 +39,7 @@ VS Code 상태바(하단 오른쪽)에 아래 정보를 실시간으로 표시�
    cd 경로/gpu-cpu-status-monitor
    vsce package
    ```
-   같은 폴더에 `gpu-cpu-status-monitor-0.0.1.vsix` 파일이 생깁니다.
+   같은 폴더에 `gpu-cpu-status-monitor-0.1.0.vsix` 파일이 생깁니다.
 4. VS Code에서 좌측 확장(Extensions) 탭 → 우측 상단 `...` 메뉴 →
    `VSIX에서 설치...(Install from VSIX...)` 선택 후 방금 만든 파일을 선택합니다.
 5. VS Code를 재시작하면 상태바에 항상 표시됩니다.

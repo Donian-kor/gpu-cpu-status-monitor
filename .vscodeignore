@@ -1,0 +1,4 @@
+.git/**
+.kilo/**
+.vscode/**
+*.vsix

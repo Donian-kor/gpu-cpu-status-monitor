@@ -38,6 +38,24 @@ function getCpuUsage() {
 }
 
 /**
+ * 시스템 RAM 사용량을 계산한다.
+ */
+function getRamStats() {
+  const total = os.totalmem();
+  const used = Math.max(0, total - os.freemem());
+  const percent = total > 0 ? Math.round((used / total) * 100) : 0;
+  return { used, total, percent };
+}
+
+/**
+ * 툴팁에 표시할 RAM 용량을 GiB 단위로 변환한다.
+ */
+function formatRam(bytes) {
+  return `${(bytes / 1024 ** 3).toFixed(1)} GiB`;
+}
+
+
+/**
  * nvidia-smi를 호출해 GPU 사용률, VRAM 사용량, 온도를 가져온다.
  */
 function getGpuStats(nvidiaSmiPath) {
@@ -67,20 +85,33 @@ async function updateStatusBar() {
     getCpuUsage(),
     getGpuStats(nvidiaSmiPath)
   ]);
+  const ramStats = getRamStats();
 
-  let text = `$(pulse) CPU ${cpuUsage}%`;
+  let text = `$(pulse) CPU ${cpuUsage}% | RAM ${ramStats.percent}%`;
+  const tooltip = [
+    `CPU: ${cpuUsage}%`,
+    `RAM: ${formatRam(ramStats.used)} / ${formatRam(ramStats.total)} (${ramStats.percent}%)`
+  ];
 
   if (gpuStats) {
     const vramPercent =
       gpuStats.memTotal > 0 ? Math.round((gpuStats.memUsed / gpuStats.memTotal) * 100) : 0;
     text += ` | GPU ${gpuStats.gpuUtil}% | ${gpuStats.temp}°C | VRAM ${gpuStats.memUsed}/${gpuStats.memTotal}MB (${vramPercent}%)`;
-    statusBarItem.tooltip = 'CPU / NVIDIA GPU 사용량 — 클릭하면 즉시 새로고침';
+    tooltip.push(
+      `GPU: ${gpuStats.gpuUtil}%`,
+      `GPU 온도: ${gpuStats.temp}°C`,
+      `VRAM: ${gpuStats.memUsed}/${gpuStats.memTotal} MiB (${vramPercent}%)`
+    );
   } else {
     text += ' | GPU: nvidia-smi 실행 실패';
-    statusBarItem.tooltip =
-      'nvidia-smi를 찾을 수 없습니다. 설정(gpuCpuMonitor.nvidiaSmiPath)에서 경로를 확인하세요.';
+    tooltip.push(
+      'GPU: nvidia-smi 실행 실패',
+      'gpuCpuMonitor.nvidiaSmiPath 설정에서 실행 파일 경로를 확인하세요.'
+    );
   }
 
+  tooltip.push('', '클릭하면 즉시 새로고침');
+  statusBarItem.tooltip = tooltip.join('\n');
   statusBarItem.text = text;
 }
 
